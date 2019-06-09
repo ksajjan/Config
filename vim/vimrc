@@ -1,0 +1,288 @@
+set nocompatible              " be iMproved, required
+filetype off                  " required
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+
+Plugin 'VundleVim/Vundle.vim' " let vundle manage vundle, required
+
+" -----------------===Code/Project Navigation===------------------
+Plugin 'scrooloose/nerdtree'                " Project and file navigation
+" Plugin 'majutsushi/tagbar'                  " Class/module browser
+Plugin 'kien/ctrlp.vim'                     " Fast transitions on project files
+
+Plugin 'mileszs/ack.vim'                   " to search the specific word in files
+
+" ------------=== TO make changes easier === -------
+Plugin 'mbbill/undotree'
+
+Plugin 'tpope/vim-fugitive'
+" plugin from http://vim-scripts.org/vim/scripts.html
+" Plugin 'L9'
+" Git plugin not hosted on GitHub
+
+
+Plugin 'Valloric/YouCompleteMe'
+" used for code folding
+Plugin 'tmhedberg/SimpylFold'
+
+" color scheme in vim
+" Plugin 'jnurmine/Zenburn'
+" Plugin 'altercation/vim-colors-solarized'
+
+" Plugin 'python-mode/python-mode'
+" python mode is not being installed by this way so adding directly
+" used for syntax highlighting
+" Plugin 'w0rp/ale'
+Plugin 'nvie/vim-flake8'
+
+Plugin 'vim-syntastic/syntastic'
+
+Plugin 'ryanoasis/vim-devicons'             " Dev Icons
+
+" debugging python
+" Plugin 'KangOl/vim-pudb'
+
+
+" surrond
+Plugin 'tpope/vim-surround'
+
+Plugin 'yuttie/comfortable-motion.vim'
+Plugin 'MattesGroeger/vim-bookmarks'
+
+" dracula theme https://draculatheme.com/
+" Plugin 'dracula/vim'
+" Light theme
+Plugin 'NLKNguyen/papercolor-theme'
+
+" to add a docstring in python code
+" Plugin 'heavenshell/vim-pydocstring'
+
+Plugin 'ayu-theme/ayu-vim'
+Plugin 'Yggdroot/indentLine'
+Plugin 'sonph/onehalf'
+
+" all plugin should be added before it
+call vundle#end()            " required
+filetype plugin indent on    " required
+
+autocmd FileType python setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+
+"split navigations
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
+
+" for papercolor-theme
+" set background=light
+" colorscheme PaperColor
+
+" set termguicolors     " enable true colors support
+" let ayucolor="light"  " for light version of theme
+" let ayucolor="mirage" " for mirage version of theme
+" let ayucolor="dark"   " for dark version of theme
+" colorscheme ayu
+
+colorscheme onehalflight
+let g:airline_theme='onehalfdark'
+
+" keys to resize the window size
+nnoremap <leader>1 :res +5<CR>
+nnoremap <leader>2 :res -5<CR>
+
+" Enable folding
+set foldmethod=indent
+set foldlevel=99
+
+" Enable folding with the spacebar
+" nnoremap <space> za
+
+" want to see the docstring of folded code
+let g:SimpylFold_docstring_preview=1
+
+" setting the indent for .py file type as according to PEP8
+au BufNewFile,BufRead *.py
+      set tabstop=4
+      set softtabstop=4
+      set shiftwidth=4
+      set textwidth=79
+      set expandtab
+      set autoindent
+      set fileformat=unix
+
+
+" setting the indent for other
+au BufNewFile,BufRead *.js, *.html, *.css
+      set tabstop=2
+      set softtabstop=2
+      set shiftwidth=2
+
+
+" this is to go to defination where cursore is by pressing g
+" and to make sure to autocomplete window go away as soon as I am done typing
+
+" nerd tree
+set encoding=utf8
+autocmd vimenter * NERDTree
+set guifont=DroidSansMono\ Nerd\ Font\ 11
+" let g:NERDTreeDirArrowExpandable = '▸'
+" let g:NERDTreeDirArrowCollapsible = '▾'
+
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+
+map <C-n> :NERDTreeToggle<CR>
+
+" UndoTree
+nnoremap <F5> :UndotreeToggle<cr>
+
+if has("persistent_undo")
+      set undodir=~/.undodir/
+          set undofile
+endif
+
+" ctrlp binding -- to search across projects
+
+let g:ctrlp_working_path_mode = 'ra'
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip     " MacOSX/Linux
+
+let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)$'
+let g:ctrlp_custom_ignore = {
+  \ 'dir':  '\v[\/]\.(git|hg|svn)$',
+  \ 'file': '\v\.(exe|so|dll)$',
+  \ 'link': 'some_bad_symbolic_links',
+  \ }
+
+" use ag(the silver searcher instead of ack)
+
+if executable('ag')
+    let g:ackprg = 'ag --vimgrep'
+  endif
+
+nnoremap <leader>f :Ack!<Space>
+
+" let g:ale_fixers = { 'python': ['autopep8']}
+let g:ycm_autoclose_preview_window_after_completion=1
+map <leader>g  :YcmCompleter GoToDefinitionElseDeclaration<CR>
+" " here <leader> is '\'.
+" let g:ycm_error_symbol = 'EE'
+" let g:ycm_warning_symbol = 'WW'
+
+" below option are taken from please read it
+" https://github.com/python-mode/python-mode/blob/develop/doc/pymode.txt
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 0
+let g:syntastic_auto_loc_list = 0
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+let g:syntastic_python_checkers = ['pep8', 'flake8', 'pylint']
+let g:syntastic_aggregate_errors = 1
+
+" let g:pymode = 1
+" let g:pymode_options = 1
+" let g:pymode_syntax = 0
+" let g:pymode_syntax_slow_sync = 1
+" let g:pymode_syntax_all = 1
+" let g:pymode_syntax_print_as_function = 0
+" let g:pymode_syntax_highlight_self = g:pymode_syntax_all
+" let g:pymode_syntax_indent_errors = g:pymode_syntax_all
+" let g:pymode_syntax_space_errors = g:pymode_syntax_all
+" let g:pymode_syntax_string_formatting = g:pymode_syntax_all
+" let g:pymode_syntax_string_format = g:pymode_syntax_all
+" let g:pymode_syntax_string_templates = g:pymode_syntax_all
+" let g:pymode_syntax_doctests = g:pymode_syntax_all
+" let g:pymode_syntax_builtin_objs = g:pymode_syntax_all
+" let g:pymode_syntax_builtin_types = g:pymode_syntax_all
+" let g:pymode_syntax_highlight_exceptions = g:pymode_syntax_all
+" let g:pymode_syntax_docstrings = g:pymode_syntax_all
+" 
+" let g:pymode_options_colorcolumn = 1
+" let g:pymode_quickfix_minheight = 3
+" let g:pymode_quickfix_maxheight = 6
+" let g:pymode_virtualenv = 1
+" let g:pymode_virtualenv_path = $VIRTUAL_ENV
+" let g:pymode_warnings = 1
+" let g:pymode_trim_whitespaces = 1
+" let g:pymode_python = 'python3'
+" let g:pymode_indent = 1
+" let g:pymode_doc = 1
+" let g:pymode_doc_bind = 'K'
+" let g:pymode_lint = 1
+" let g:pymode_lint_on_write = 1
+" let g:pymode_lint_on_fly = 0
+" let g:pymode_lint_message = 1
+" let g:pymode_lint_checkers = ['pyflakes', 'pep8', 'mccabe']
+" let g:pymode_lint_signs = 1
+" let g:pymode_lint_cwindow = 0
+" let g:pymode_rope_completion = 0
+" let g:pymode_rope_complete_on_dot = 1
+
+"python with virtualenv support
+py << EOF
+import os
+import sys
+if 'VIRTUAL_ENV' in os.environ:
+	project_base_dir = os.environ['VIRTUAL_ENV']
+	activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
+	execfile(activate_this, dict(__file__=activate_this))
+EOF
+
+" make your python code clean and look good
+let python_highlight_all=1
+colo desert
+syntax on 
+
+" Comfortable motion
+"let g:comfortable_motion_no_default_key_mappings = 1
+noremap <silent> <Up> :call comfortable_motion#flick(-40)<CR>
+noremap <silent> <Down>   :call comfortable_motion#flick(40)<CR>
+set mouse=a
+noremap <silent> <ScrollWheelDown> :call comfortable_motion#flick(40)<CR>
+noremap <silent> <ScrollWheelUp>   :call comfortable_motion#flick(-40)<CR>
+
+"vim-bookmarks
+let g:bookmark_save_per_working_dir=1
+let g:bookmark_manage_per_buffer=1
+let g:bookmark_auto_close=1
+" let nerdtree ignore .pyc files
+
+" show line number
+" set nu
+
+" vim maintain its own clipborad so can't copy paste from other applications
+" use this to use system-wide clipboard
+
+" for colored vim with Zenburn plugin
+" colors zenburn
+" colorscheme zenburn
+" this is to set the universal clipboard (currently not working) fix this
+set clipboard=unnamedplus
+
+python from powerline.vim import setup as powerline_setup
+python powerline_setup()
+python del powerline_setup
+set laststatus=2 " Always display the statusline in all windows
+set showtabline=2 " Always display the tabline, even if there is only one tab
+set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusline)
+set t_Co=256
+
+" support for octave script downloaded from here
+" https://www.vim.org/scripts/script.php?script_id=3600
+" Octave syntax
+augroup filetypedetect
+  au! BufRead,BufNewFile *.m,*.oct set filetype=octave
+augroup END 
+
+" Use keywords from Octave syntax language file for autocomplete 
+
+if has("autocmd") && exists("+omnifunc")
+     autocmd Filetype octave
+        \ if &omnifunc == "" |
+        \ setlocal omnifunc=syntaxcomplete#Complete |
+        \ endif
+endif 
